@@ -64,5 +64,13 @@ function page_cr_kraje_detail() {
         object_not_found(sprintf('Kraj %d neexistuje.', $id));
     }
 
+    $mesta = db_find_objects('mesta v kraji',
+             'SELECT id FROM mesto WHERE kraj = :id',
+             [ 'id' => $id ]
+    );
+    $data['mesta'] = array_map(function($x) {
+        return $x['id'];
+    }, $mesta);
+
     return json($data);
 }
