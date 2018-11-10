@@ -38,6 +38,8 @@ function configure() {
 
 session_start();
 
+header("Access-Control-Allow-Origin: *");
+
 layout('layout/empty.php');
 
 function not_found($errno, $errstr, $errfile=null, $errline=null) {
