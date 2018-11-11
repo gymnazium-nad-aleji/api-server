@@ -83,16 +83,29 @@ $GLOBALS['THE_API']['cr'] = [
                     object_not_found(sprintf('Kraj %d neexistuje.', $id));
                 }
 
-                $mesta = db_find_objects('mesta v kraji',
-                    'SELECT id FROM mesto WHERE kraj = :id',
-                    [ 'id' => $id ]
-                );
-                $data['mesta'] = array_map(function($x) {
-                    return $x['id'];
-                }, $mesta);
-
                 return $data;
             },
+        ],
+
+        [
+            'path' => 'kraje/:id/mesta',
+            'params' => [ 'id' ],
+            'description' => 'Seznam měst v kraji s daným ID',
+            'example' => 'kraje/3/mesta',
+            'handler' => function () {
+                $id = params('id');
+                $kraj = db_find_object('overeni existence kraje',
+                    'SELECT id FROM kraj WHERE id = :id',
+                    [ 'id' => $id ]
+                );
+                if ($kraj == null) {
+                    object_not_found(sprintf('Kraj %d neexistuje.', $id));
+                }
+                return db_find_objects('mesta v kraji',
+                    'SELECT id, jmeno FROM mesto WHERE kraj = :id',
+                    [ 'id' => $id ]
+                );
+            }
         ],
     ],
 
