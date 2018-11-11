@@ -61,3 +61,7 @@ function page_api_overview($base, $info) {
     
     return html('subapi.html.php');
 }
+
+function page_api_wrapper($info) {
+    return json($info['handler']());
+}

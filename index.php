@@ -30,7 +30,9 @@
 
 require_once 'lib/limonade.php';
 require_once 'lib/inc.php';
-require_once 'lib/apis.php';
+
+$GLOBALS['THE_API'] = [];
+require_once_dir('apis/');
 
 function configure() {
 	db_init('sqlite:db/db.sqlite');
@@ -46,12 +48,12 @@ function not_found($errno, $errstr, $errfile=null, $errline=null) {
     return $errstr;
 }
 
-dispatch('/', 'page_index', ['params' => [ $APIS ]]);
+dispatch('/', 'page_index', ['params' => [ $GLOBALS['THE_API'] ]]);
 
-foreach ($APIS as $base => $info) {
+foreach ($GLOBALS['THE_API'] as $base => $info) {
     dispatch('/' . $base, 'page_api_overview', ['params' => [ $base, $info ]]);
     foreach ($info['paths'] as $path) {
-        dispatch('/' . $base . '/' . $path['path'], $path['handler']);
+        dispatch('/' . $base . '/' . $path['path'], 'page_api_wrapper', ['params' => [ $path ] ]);
     }
 }
 
